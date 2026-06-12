@@ -9,6 +9,7 @@ export default function SongsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [filter, setFilter] = useState('')
+  const [sortKey, setSortKey] = useState('artist') // 'artist' | 'title'
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
@@ -31,6 +32,19 @@ export default function SongsPage() {
     )
   }, [songs, filter])
 
+  const sorted = useMemo(() => {
+    const byTitle = (a, b) => a.title.localeCompare(b.title, 'ja')
+    return [...filtered].sort((a, b) => {
+      if (sortKey === 'title') return byTitle(a, b)
+      // アーティスト順。作者未設定は末尾、同アーティスト内は曲名順。
+      const aa = a.artist || ''
+      const ba = b.artist || ''
+      if (!aa !== !ba) return aa ? -1 : 1
+      const c = aa.localeCompare(ba, 'ja')
+      return c !== 0 ? c : byTitle(a, b)
+    })
+  }, [filtered, sortKey])
+
   if (!isSupabaseConfigured) return <NotConfigured />
   if (loading) return <p className="state">読み込み中…</p>
   if (error) return <p className="state state--error">エラー: {error}</p>
@@ -47,10 +61,28 @@ export default function SongsPage() {
           onChange={(e) => setFilter(e.target.value)}
         />
       </div>
-      <p className="count">{filtered.length} 曲</p>
+      <div className="sort-bar">
+        <span className="count">{sorted.length} 曲</span>
+        <div className="segmented" role="group" aria-label="並べ替え">
+          <button
+            type="button"
+            className={'segmented__btn' + (sortKey === 'artist' ? ' is-active' : '')}
+            onClick={() => setSortKey('artist')}
+          >
+            アーティスト順
+          </button>
+          <button
+            type="button"
+            className={'segmented__btn' + (sortKey === 'title' ? ' is-active' : '')}
+            onClick={() => setSortKey('title')}
+          >
+            曲名順
+          </button>
+        </div>
+      </div>
 
       <ul className="song-list song-list--flat">
-        {filtered.map((s) => (
+        {sorted.map((s) => (
           <li key={s.id} className="song-list__item">
             <div className="song-list__main">
               <span className="song-list__title">{s.title}</span>
