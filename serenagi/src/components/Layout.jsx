@@ -13,7 +13,7 @@ export default function Layout() {
     <div className="app-shell">
       <Bubbles />
       <header className="app-header">
-        <span className="app-header__title">せれなぎ Song List</span>
+        <span className="app-header__title">せれなぎの歌える曲リスト</span>
       </header>
 
       <main className="app-main">
