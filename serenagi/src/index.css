@@ -344,8 +344,16 @@ body {
   cursor: pointer;
 }
 
-.song-list__variant {
+/* 各曲行の右側アクション（一覧から除外チェック + 削除）を右寄せでまとめる */
+.song-list__row-actions {
   flex-shrink: 0;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.song-list__variant {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -353,6 +361,24 @@ body {
   color: var(--text-sub);
   white-space: nowrap;
   cursor: pointer;
+}
+
+.song-list__variant input {
+  margin: 0;
+}
+
+/* 歌枠情報の編集フォーム（曲リストと区切る） */
+.stream-edit {
+  padding-bottom: 12px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-sub);
+  margin: 12px 2px 2px;
 }
 
 /* ===== ボタン ===== */

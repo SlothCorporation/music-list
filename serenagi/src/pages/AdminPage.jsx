@@ -3,6 +3,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import {
   fetchStreamsWithPerformances,
   createStream,
+  updateStream,
   deleteStream,
   addPerformance,
   deletePerformance,
@@ -206,6 +207,30 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
   const [songUrl, setSongUrl] = useState('')
   const [isVariant, setIsVariant] = useState(false)
 
+  // 歌枠情報の編集フォーム（最新の stream に追従）
+  const [eTitle, setETitle] = useState(stream.title)
+  const [eUrl, setEUrl] = useState(stream.url || '')
+  const [eDate, setEDate] = useState(stream.streamed_at || '')
+  useEffect(() => {
+    setETitle(stream.title)
+    setEUrl(stream.url || '')
+    setEDate(stream.streamed_at || '')
+  }, [stream.title, stream.url, stream.streamed_at])
+
+  async function handleSaveStream(e) {
+    e.preventDefault()
+    try {
+      await updateStream(stream.id, {
+        title: eTitle,
+        url: eUrl,
+        streamed_at: eDate,
+      })
+      await onChanged()
+    } catch (e) {
+      onError(e.message)
+    }
+  }
+
   async function handleAdd(e) {
     e.preventDefault()
     try {
@@ -256,7 +281,7 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
         </div>
         <div className="card__actions">
           <button className="btn" onClick={onToggle}>
-            {active ? '閉じる' : '曲を編集'}
+            {active ? '閉じる' : '編集'}
           </button>
           <button className="btn btn--danger" onClick={onDeleteStream}>
             削除
@@ -266,6 +291,40 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
 
       {active && (
         <>
+          {/* 歌枠情報の編集 */}
+          <form className="form stream-edit" onSubmit={handleSaveStream}>
+            <label className="form__label">
+              歌枠タイトル
+              <input
+                className="input"
+                value={eTitle}
+                onChange={(e) => setETitle(e.target.value)}
+                required
+              />
+            </label>
+            <label className="form__label">
+              配信URL
+              <input
+                className="input"
+                value={eUrl}
+                onChange={(e) => setEUrl(e.target.value)}
+              />
+            </label>
+            <label className="form__label">
+              配信日
+              <input
+                className="input"
+                type="date"
+                value={eDate}
+                onChange={(e) => setEDate(e.target.value)}
+              />
+            </label>
+            <button className="btn btn--primary" type="submit">
+              歌枠情報を保存
+            </button>
+          </form>
+
+          <p className="section-label">曲</p>
           <ul className="song-list">
             {stream.performances.map((p) => (
               <li key={p.id} className="song-list__item">
@@ -275,24 +334,29 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
                     <span className="song-list__artist">{p.song.artist}</span>
                   )}
                 </div>
-                {p.song && (
-                  <label className="song-list__variant" title="チェックすると「歌える曲一覧」に出さない（派生版）">
-                    <input
-                      type="checkbox"
-                      checked={!!p.song.is_variant}
-                      onChange={(e) =>
-                        handleToggleVariant(p.song.id, e.target.checked)
-                      }
-                    />
-                    一覧から除外
-                  </label>
-                )}
-                <button
-                  className="btn btn--danger btn--sm"
-                  onClick={() => handleDeletePerf(p.id)}
-                >
-                  ×
-                </button>
+                <div className="song-list__row-actions">
+                  {p.song && (
+                    <label
+                      className="song-list__variant"
+                      title="チェックすると「歌える曲一覧」に出さない（派生版）"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!!p.song.is_variant}
+                        onChange={(e) =>
+                          handleToggleVariant(p.song.id, e.target.checked)
+                        }
+                      />
+                      一覧から除外
+                    </label>
+                  )}
+                  <button
+                    className="btn btn--danger btn--sm"
+                    onClick={() => handleDeletePerf(p.id)}
+                  >
+                    ×
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

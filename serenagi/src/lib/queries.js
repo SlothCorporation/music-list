@@ -41,6 +41,14 @@ export async function createStream({ title, url, streamed_at }) {
   return data
 }
 
+export async function updateStream(id, { title, url, streamed_at }) {
+  const { error } = await supabase
+    .from('streams')
+    .update({ title, url: url || null, streamed_at: streamed_at || null })
+    .eq('id', id)
+  if (error) throw error
+}
+
 export async function deleteStream(id) {
   const { error } = await supabase.from('streams').delete().eq('id', id)
   if (error) throw error
