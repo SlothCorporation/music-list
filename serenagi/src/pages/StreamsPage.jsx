@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { isSupabaseConfigured } from '../lib/supabase'
 import { fetchStreamsWithPerformances } from '../lib/queries'
 import NotConfigured from '../components/NotConfigured'
@@ -8,6 +8,7 @@ export default function StreamsPage() {
   const [streams, setStreams] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [filter, setFilter] = useState('')
 
   useEffect(() => {
     if (!isSupabaseConfigured) {
@@ -20,6 +21,22 @@ export default function StreamsPage() {
       .finally(() => setLoading(false))
   }, [])
 
+  // 検索時は、曲名・作者がヒットした曲だけを残し、ヒットが無い歌枠は隠す
+  const filtered = useMemo(() => {
+    const q = filter.trim().toLowerCase()
+    if (!q) return streams
+    return streams
+      .map((s) => ({
+        ...s,
+        performances: s.performances.filter(
+          (p) =>
+            p.song?.title?.toLowerCase().includes(q) ||
+            p.song?.artist?.toLowerCase().includes(q)
+        ),
+      }))
+      .filter((s) => s.performances.length > 0)
+  }, [streams, filter])
+
   if (!isSupabaseConfigured) return <NotConfigured />
   if (loading) return <p className="state">読み込み中…</p>
   if (error) return <p className="state state--error">エラー: {error}</p>
@@ -28,7 +45,19 @@ export default function StreamsPage() {
   return (
     <div className="page">
       <h1 className="page__title">歌枠ごとの楽曲</h1>
-      {streams.map((s) => (
+      <div className="search-bar">
+        <input
+          className="input"
+          type="search"
+          placeholder="🔍 曲名・作者で検索"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+      </div>
+      {filtered.length === 0 ? (
+        <p className="state">該当する曲がありません。</p>
+      ) : (
+        filtered.map((s) => (
         <section key={s.id} className="card">
           <header className="card__head">
             <div>
@@ -70,7 +99,8 @@ export default function StreamsPage() {
             </ul>
           )}
         </section>
-      ))}
+        ))
+      )}
     </div>
   )
 }

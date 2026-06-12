@@ -24,17 +24,8 @@ export async function fetchSongs() {
   return data
 }
 
-// 機能4: 曲名 / 作者・Vo. で検索
-export async function searchSongs(keyword) {
-  const kw = `%${keyword.trim()}%`
-  const { data, error } = await supabase
-    .from('songs')
-    .select('id, title, artist')
-    .or(`title.ilike.${kw},artist.ilike.${kw}`)
-    .order('title')
-  if (error) throw error
-  return data
-}
+// 機能4の検索は一覧ページ上のフィルタ（クライアント側）で行うため、
+// 専用の検索クエリは持たない。
 
 // ---- 管理系（要ログイン・書き込み） ----
 

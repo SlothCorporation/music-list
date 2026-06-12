@@ -1,9 +1,8 @@
 import { NavLink, Outlet } from 'react-router-dom'
 
 const tabs = [
-  { to: '/streams', label: '歌枠', icon: '🎬' },
   { to: '/songs', label: '曲一覧', icon: '🎵' },
-  { to: '/search', label: '検索', icon: '🔍' },
+  { to: '/streams', label: '歌枠', icon: '🎬' },
   { to: '/admin', label: '管理', icon: '⚙️' },
 ]
 

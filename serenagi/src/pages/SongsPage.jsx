@@ -38,13 +38,15 @@ export default function SongsPage() {
   return (
     <div className="page">
       <h1 className="page__title">歌える曲一覧</h1>
-      <input
-        className="input"
-        type="search"
-        placeholder="この一覧を絞り込む…"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      />
+      <div className="search-bar">
+        <input
+          className="input"
+          type="search"
+          placeholder="🔍 曲名・作者で検索"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+      </div>
       <p className="count">{filtered.length} 曲</p>
 
       <ul className="song-list song-list--flat">

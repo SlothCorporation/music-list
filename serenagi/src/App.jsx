@@ -2,7 +2,6 @@ import { HashRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import StreamsPage from './pages/StreamsPage'
 import SongsPage from './pages/SongsPage'
-import SearchPage from './pages/SearchPage'
 import AdminPage from './pages/AdminPage'
 
 // GitHub Pages は SPA のパスフォールバックが無いため HashRouter を使う
@@ -12,12 +11,11 @@ export default function App() {
     <HashRouter>
       <Routes>
         <Route element={<Layout />}>
-          <Route index element={<Navigate to="/streams" replace />} />
-          <Route path="streams" element={<StreamsPage />} />
+          <Route index element={<Navigate to="/songs" replace />} />
           <Route path="songs" element={<SongsPage />} />
-          <Route path="search" element={<SearchPage />} />
+          <Route path="streams" element={<StreamsPage />} />
           <Route path="admin" element={<AdminPage />} />
-          <Route path="*" element={<Navigate to="/streams" replace />} />
+          <Route path="*" element={<Navigate to="/songs" replace />} />
         </Route>
       </Routes>
     </HashRouter>
