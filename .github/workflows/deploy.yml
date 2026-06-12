@@ -35,7 +35,9 @@ jobs:
           mkdir -p site
           for app in $APPS; do
             echo "::group::build $app"
-            (cd "$app" && npm ci && npm run build)
+            # npm ci は @emnapi 等のOS別オプション依存でロックファイル不整合を起こすため
+            # npm install を使う（静的サイトのビルドなので再現性への影響はない）。
+            (cd "$app" && npm install --no-audit --no-fund && npm run build)
             cp -r "$app/dist" "site/$app"
             echo "::endgroup::"
           done
