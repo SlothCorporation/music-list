@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
+import Bubbles from './Bubbles'
 
 const tabs = [
   { to: '/songs', label: '曲一覧', icon: '🎵' },
@@ -10,6 +11,7 @@ const tabs = [
 export default function Layout() {
   return (
     <div className="app-shell">
+      <Bubbles />
       <header className="app-header">
         <span className="app-header__title">せれなぎ Song List</span>
       </header>
