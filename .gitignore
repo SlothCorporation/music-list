@@ -16,3 +16,6 @@ dist-ssr/
 # ログ
 *.log
 npm-debug.log*
+
+# 作業用ファイル（取り込み元データ・seed SQL等。公開しない）
+tmp/
