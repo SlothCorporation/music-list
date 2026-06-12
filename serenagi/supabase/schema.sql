@@ -17,9 +17,13 @@ create table if not exists public.songs (
   id         bigint generated always as identity primary key,
   title      text not null,
   artist     text not null default '',  -- 作者・Vo.（upsert を効かせるため not null）
+  is_variant boolean not null default false,  -- ○○ver. などの派生版。歌える曲一覧(distinct)には出さない
   created_at timestamptz not null default now(),
   unique (title, artist)
 );
+
+-- 既存DB向け（schema 適用済みの環境で列だけ追加したい場合）
+alter table public.songs add column if not exists is_variant boolean not null default false;
 
 -- 歌枠 × 曲（その枠で歌った実績）
 create table if not exists public.performances (

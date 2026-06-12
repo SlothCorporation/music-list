@@ -6,6 +6,7 @@ import {
   deleteStream,
   addPerformance,
   deletePerformance,
+  updateSongVariant,
   signIn,
   signOut,
 } from '../lib/queries'
@@ -203,6 +204,7 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
   const [songTitle, setSongTitle] = useState('')
   const [artist, setArtist] = useState('')
   const [songUrl, setSongUrl] = useState('')
+  const [isVariant, setIsVariant] = useState(false)
 
   async function handleAdd(e) {
     e.preventDefault()
@@ -212,10 +214,12 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
         title: songTitle,
         artist,
         url: songUrl,
+        is_variant: isVariant,
       })
       setSongTitle('')
       setArtist('')
       setSongUrl('')
+      setIsVariant(false)
       await onChanged()
     } catch (e) {
       onError(e.message)
@@ -225,6 +229,16 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
   async function handleDeletePerf(id) {
     try {
       await deletePerformance(id)
+      await onChanged()
+    } catch (e) {
+      onError(e.message)
+    }
+  }
+
+  // 曲一覧に出す/出さない（派生版フラグ）を切り替える
+  async function handleToggleVariant(songId, next) {
+    try {
+      await updateSongVariant(songId, next)
       await onChanged()
     } catch (e) {
       onError(e.message)
@@ -261,6 +275,18 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
                     <span className="song-list__artist">{p.song.artist}</span>
                   )}
                 </div>
+                {p.song && (
+                  <label className="song-list__variant" title="チェックすると「歌える曲一覧」に出さない（派生版）">
+                    <input
+                      type="checkbox"
+                      checked={!!p.song.is_variant}
+                      onChange={(e) =>
+                        handleToggleVariant(p.song.id, e.target.checked)
+                      }
+                    />
+                    一覧から除外
+                  </label>
+                )}
                 <button
                   className="btn btn--danger btn--sm"
                   onClick={() => handleDeletePerf(p.id)}
@@ -291,6 +317,14 @@ function StreamEditor({ stream, active, onToggle, onDeleteStream, onChanged, onE
               value={songUrl}
               onChange={(e) => setSongUrl(e.target.value)}
             />
+            <label className="form__check" title="○○ver. などの派生版。チェックすると「歌える曲一覧」に出さない">
+              <input
+                type="checkbox"
+                checked={isVariant}
+                onChange={(e) => setIsVariant(e.target.checked)}
+              />
+              派生版（曲一覧に出さない）
+            </label>
             <button className="btn btn--primary" type="submit">
               曲を追加
             </button>
