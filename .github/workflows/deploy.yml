@@ -18,6 +18,8 @@ concurrency:
 # 人を増やすときは APPS にディレクトリ名を足すだけ（root には index を置かない＝404）。
 env:
   APPS: 'serenagi'
+  # checkout/setup-node 等のAction本体をNode 24で実行（Node 20非推奨警告の解消）
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
   build:
