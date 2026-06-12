@@ -1,0 +1,336 @@
+:root {
+  /* テーマカラー: #DCF3F6（淡いアクア）基調 */
+  --theme: #dcf3f6;
+  --theme-deep: #2aa7b8; /* アクセント（濃いティール） */
+  --theme-deep-2: #1c8794;
+  --bg: #f3fbfc;
+  --surface: #ffffff;
+  --text: #234047;
+  --text-sub: #6b8a90;
+  --border: #cfe8ec;
+  --danger: #e06666;
+  --danger-deep: #c0392b;
+  --shadow: 0 2px 10px rgba(42, 167, 184, 0.12);
+  --radius: 16px;
+
+  font-family: system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP',
+    sans-serif;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* スマホフレームの外側 */
+  background: linear-gradient(160deg, var(--theme) 0%, #eaf8fa 60%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ===== スマホシェル ===== */
+.app-shell {
+  max-width: 460px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  position: relative;
+}
+
+@media (min-width: 460px) {
+  .app-shell {
+    box-shadow: 0 0 40px rgba(42, 167, 184, 0.18);
+  }
+}
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 16px 18px;
+  background: var(--theme-deep);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.app-header__title {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.app-main {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 76px; /* タブバー分の余白 */
+}
+
+/* ===== タブバー ===== */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -2px 10px rgba(42, 167, 184, 0.08);
+  z-index: 10;
+}
+
+.tabbar__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 9px 0 12px;
+  text-decoration: none;
+  color: var(--text-sub);
+  font-size: 11px;
+}
+
+.tabbar__item--active {
+  color: var(--theme-deep);
+  font-weight: 700;
+}
+
+.tabbar__icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* ===== ページ共通 ===== */
+.page {
+  padding: 16px 14px;
+}
+
+.page__title {
+  font-size: 18px;
+  margin: 2px 0 14px;
+}
+
+.state {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--text-sub);
+}
+
+.state--error {
+  color: var(--danger-deep);
+}
+
+.count {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin: 8px 2px;
+}
+
+/* ===== カード ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+.card__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.card__title {
+  font-size: 15px;
+  margin: 0;
+}
+
+.card__meta {
+  font-size: 12px;
+  color: var(--text-sub);
+  margin: 3px 0 0;
+}
+
+.card__actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.card__empty {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin: 4px 0 0;
+}
+
+/* ===== 曲リスト ===== */
+.song-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.song-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 4px;
+  border-top: 1px solid var(--border);
+}
+
+.song-list__item:first-child {
+  border-top: none;
+}
+
+.song-list--flat .song-list__item {
+  padding: 12px 6px;
+}
+
+.song-list__main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.song-list__title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.song-list__artist {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
+.song-list__link {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--theme);
+  color: var(--theme-deep-2);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+/* ===== フォーム / 入力 ===== */
+.input {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fff;
+  color: var(--text);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--theme-deep);
+  box-shadow: 0 0 0 3px rgba(42, 167, 184, 0.15);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form__label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+/* ===== ボタン ===== */
+.btn {
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn--primary {
+  background: var(--theme-deep);
+  border-color: var(--theme-deep);
+  color: #fff;
+}
+
+.btn--primary:disabled {
+  opacity: 0.6;
+}
+
+.btn--danger {
+  color: var(--danger-deep);
+  border-color: var(--danger);
+}
+
+.btn--sm {
+  padding: 4px 10px;
+  font-size: 14px;
+}
+
+.link-btn {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  background: var(--theme);
+  color: var(--theme-deep-2);
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ===== 管理画面 ===== */
+.admin-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notice__text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-sub);
+}
+
+code {
+  background: var(--theme);
+  color: var(--theme-deep-2);
+  padding: 1px 5px;
+  border-radius: 5px;
+  font-size: 0.9em;
+}
