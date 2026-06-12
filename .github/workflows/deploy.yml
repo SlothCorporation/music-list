@@ -24,9 +24,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: pnpm
+          # ロックファイルは各アプリのサブディレクトリにあるため明示する
+          cache-dependency-path: '**/pnpm-lock.yaml'
       - name: Build each app
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
@@ -35,9 +41,7 @@ jobs:
           mkdir -p site
           for app in $APPS; do
             echo "::group::build $app"
-            # npm ci は @emnapi 等のOS別オプション依存でロックファイル不整合を起こすため
-            # npm install を使う（静的サイトのビルドなので再現性への影響はない）。
-            (cd "$app" && npm install --no-audit --no-fund && npm run build)
+            (cd "$app" && pnpm install --frozen-lockfile && pnpm run build)
             cp -r "$app/dist" "site/$app"
             echo "::endgroup::"
           done
